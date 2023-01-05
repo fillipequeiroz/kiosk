@@ -1,0 +1,56 @@
+p{
+  font-family: 'SFPRODISPLAY';
+}
+
+@font-face {
+  font-family: "SFPRODISPLAY";   /*Can be any text*/
+  src: local("SFPRODISPLAY"),
+  url("../public/fonts/SFPRODISPLAYREGULAR.OTF") format("truetype");
+}
+
+.star-svg{
+  display: inline;
+}
+
+.checkin-button{
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 15.5px 24px 15.5px 28px;
+  gap: 8px;
+  min-width: 370px;
+  height: 71px;
+  left: 335px;
+  top: 817px;
+  background: #FCFCFD;
+  border: 1px solid #757575;
+  border-radius: 32px;
+  cursor: pointer;
+}
+
+.checkin-img{
+  background: url("./../src/assets/images/checkin_background.png") no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+.hg-theme-default {
+  background-color: #ececec;
+  border-radius: 5px;
+  box-sizing: border-box;
+  font-family: HelveticaNeue-Light, Helvetica Neue Light, Helvetica Neue, Helvetica, Arial, Lucida Grande, sans-serif;
+  overflow: hidden;
+  padding: 5px;
+  touch-action: manipulation;
+  -webkit-user-select: none;
+  user-select: none;
+  width: 100%;
+  left: 0;
+  position: absolute;
+  bottom: 0;
+
+}

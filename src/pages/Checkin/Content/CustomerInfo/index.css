@@ -1,0 +1,10 @@
+.zipcode-button {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 15.5px 24px 15.5px 28px;
+  gap: 8px;
+  cursor: pointer;
+  border-radius: 4px;
+}
