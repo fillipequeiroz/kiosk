@@ -1,5 +1,5 @@
 import {Box, Center, Flex, Text} from "@chakra-ui/react";
-import React, {Fragment, useState} from "react";
+import React, {useState} from "react";
 import {PrimaryButton} from "../../../../component/Button/PrimaryButton";
 import {CheckinContext} from "../../../../context/checkin";
 import {BsCheckSquareFill} from "react-icons/bs";

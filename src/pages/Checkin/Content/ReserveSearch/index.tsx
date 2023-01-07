@@ -1,21 +1,11 @@
-import {
-  Box,
-  Button,
-  Center,
-  Flex,
-  FormControl,
-  FormLabel,
-  GridItem,
-  Input,
-  SimpleGrid,
-  Text,
-  VStack, Wrap, WrapItem
-} from "@chakra-ui/react";
+import {Box, Center, Flex, FormControl, FormLabel, GridItem, Input, SimpleGrid, Text, VStack} from "@chakra-ui/react";
 import React, {Fragment, useEffect, useRef, useState} from "react";
 import {PrimaryButton} from "../../../../component/Button/PrimaryButton";
 import {CheckinContext} from "../../../../context/checkin";
-import {toast, ToastContainer} from "react-toastify";
+import {toast} from "react-toastify";
 import Keyboard from "react-simple-keyboard";
+import {useDisclosure} from "@chakra-ui/hooks";
+import {ModalReserve} from "../../../../component/ModalReserve";
 
 export const ReserveSearch = () => {
   const [checkinCodeError, setCheckinCodeError] = useState(false);
@@ -23,12 +13,17 @@ export const ReserveSearch = () => {
   const [lastnameError, setLastnameError] = useState(false);
   const context = React.useContext(CheckinContext);
 
-  const [inputs, setInputs] = useState({checkinCode: context.state.checkinCode, name: context.state.name, lastname: context.state.lastname});
+  const [inputs, setInputs] = useState({
+    checkinCode: context.state.checkinCode,
+    name: context.state.name,
+    lastname: context.state.lastname
+  });
   const [layoutName, setLayoutName] = useState("default");
   const [inputName, setInputName] = useState("default");
   const keyboard = useRef();
   const [keyboardVisibility, setKeyboardVisibility] = useState(false);
 
+  const {isOpen, onOpen, onClose} = useDisclosure();
 
   useEffect(() => {
     const clickHanlder = (e: any) => {
@@ -41,8 +36,6 @@ export const ReserveSearch = () => {
       }
     }
 
-    console.log('useEffect');
-    console.log(inputs);
 
     window.addEventListener("click", clickHanlder);
     return window.removeEventListener("click", clickHanlder, true);
@@ -56,10 +49,10 @@ export const ReserveSearch = () => {
   }
 
   const onChangeAll = (inputs: any) => {
-    console.log('onChangeAll: ')
+    console.log('onChangeAll');
+    console.log(inputs);
     // @ts-ignore
     context.state[Object.keys(inputs)[0]] = inputs[Object.keys(inputs)[0]];
-    console.log(context.state);
     setInputs({checkinCode: context.state.checkinCode, name: context.state.name, lastname: context.state.lastname});
   };
 
@@ -73,10 +66,8 @@ export const ReserveSearch = () => {
   };
 
   const onChangeInput = (event: any) => {
-    console.log('onChangeInput:');
 
     const inputVal = event.target.value;
-    console.log(inputVal);
     setInputs({
       ...inputs,
       [inputName]: inputVal
@@ -87,45 +78,57 @@ export const ReserveSearch = () => {
   };
 
   const getInputValue = (inputName: string) => {
-    console.log('getInputValue: ')
-    console.log(inputs)
     // @ts-ignore
     return inputs[inputName] || "";
   };
 
 
-  const handleClickNextStep = () => {
-
-
-
+  const validateForm = (): boolean => {
     if (!context.state.checkinCode && !context.state.name && !context.state.lastname) {
       setCheckinCodeError(true);
       setNameError(true);
       setLastnameError(true);
       toast.error('Please inform the checkin code or the name');
-      return;
+      return false;
     }
 
     if (context.state.checkinCode) {
       clearErrorMessage();
-      context.fowardStep(context.state.step + 1);
-      return;
+      return true;
     }
 
     if (context.state.name && !context.state.lastname) {
       setNameError(false);
       setLastnameError(true);
       toast.error('Please inform the lastname');
-      return;
+      return false;
     }
     if (context.state.lastname && !context.state.name) {
       setNameError(true);
       setLastnameError(false);
       toast.error('Please inform the name');
-      return;
+      return false;
     }
     clearErrorMessage();
+    return true;
+  }
+
+  const nexPage = () => {
     context.fowardStep(context.state.step + 1);
+  }
+
+  const handleClickNextStep = () => {
+    if (!validateForm()) {
+      return;
+    }
+
+    //TODO aqui deverá verificar do retorno do back
+    const hasMoreThanOneReserve = true;
+    if (hasMoreThanOneReserve) {
+      onOpen();
+    } else {
+      nexPage();
+    }
   }
 
   const clearErrorMessage = () => {
@@ -215,6 +218,7 @@ export const ReserveSearch = () => {
                   value={getInputValue("name")}
                   onChange={onChangeInput}
                   onFocus={() => {
+                    setKeyboardVisibility(false);
                     setKeyboardVisibility(true);
                     setInputName("name");
                     clearInput("name");
@@ -225,7 +229,7 @@ export const ReserveSearch = () => {
 
             <GridItem>
               <FormControl isInvalid={lastnameError}>
-                <FormLabel htmlFor='code' fontWeight={400} color={"#121212"} fontSize="16" fontFamily={"Inter"}>Enter
+                <FormLabel htmlFor='lastname' fontWeight={400} color={"#121212"} fontSize="16" fontFamily={"Inter"}>Enter
                   your last name</FormLabel>
                 <Input
                   id='lastname'
@@ -233,6 +237,7 @@ export const ReserveSearch = () => {
                   value={getInputValue("lastname")}
                   onChange={onChangeInput}
                   onFocus={() => {
+                    setKeyboardVisibility(false);
                     setKeyboardVisibility(true);
                     setInputName("lastname");
                     clearInput("lastname");
@@ -250,6 +255,9 @@ export const ReserveSearch = () => {
       <Center mb={10}>
         <PrimaryButton text={'Confirm'} click={handleClickNextStep} mt={10} ml={0}/>
       </Center>
+
+      <ModalReserve onOpen={onOpen} handleClickNextStep={nexPage} isOpen={isOpen}
+                    onClose={onClose}></ModalReserve>
 
       {keyboardVisibility && (
         <Keyboard

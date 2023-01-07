@@ -4,7 +4,6 @@ import {BsCalendarCheck, BsFillQuestionCircleFill} from "react-icons/bs";
 import {TabItemComponent} from "../TabItem";
 import {IoMdInformationCircleOutline} from "react-icons/io";
 import * as pages from "./pages";
-import {CHECKIN_FLOW} from "./pages";
 import {useNavigate} from "react-router-dom";
 import {CheckoutContext} from "../../context/checkout";
 import {CheckinContext} from "../../context/checkin";

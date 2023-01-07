@@ -2,10 +2,13 @@ import {Box, Center, Flex, FormControl, FormLabel, GridItem, Input, SimpleGrid, 
 import React, {Fragment} from "react";
 import {PrimaryButton} from "../../../../component/Button/PrimaryButton";
 import {CheckoutContext} from "../../../../context/checkout";
+import {useDisclosure} from "@chakra-ui/hooks";
+import {ModalReserve} from "../../../../component/ModalReserve";
 
 export const ReserveCheckoutSearch = () => {
 
   const context = React.useContext(CheckoutContext);
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const handleClickNextStep = () => {
     context.forwardStep(context.state.step + 1);
@@ -92,8 +95,10 @@ export const ReserveCheckoutSearch = () => {
       </Box>
 
       <Center mb={10}>
-        <PrimaryButton text={'Confirm'} click={handleClickNextStep} mt={10} ml={0}/>
+        <PrimaryButton text={'Confirm'} click={onOpen} mt={10} ml={0}/>
       </Center>
+
+      <ModalReserve onOpen={onOpen} handleClickNextStep={handleClickNextStep} isOpen={isOpen} onClose={onClose}></ModalReserve>
     </Fragment>
   );
 

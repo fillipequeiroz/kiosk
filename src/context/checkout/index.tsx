@@ -1,6 +1,4 @@
-import {
-  createContext, useReducer, FC, useEffect
-} from "react";
+import {createContext, FC, useReducer} from "react";
 import {useNavigate} from "react-router-dom";
 import {data} from "./data";
 import * as actions from "./actions";

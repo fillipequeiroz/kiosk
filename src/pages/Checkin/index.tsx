@@ -5,7 +5,6 @@ import {BackButton} from "../../component/Button/BackButton";
 import {Outlet, useNavigate} from "react-router-dom";
 import {CloseButton} from "../../component/Button/CloseButton";
 import {CheckinContextProvider} from "../../context/checkin";
-import {ToastContainer} from "react-toastify";
 
 const CheckinBg = require("../../assets/images/checkin_background.png")
 

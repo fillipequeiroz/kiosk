@@ -1,6 +1,4 @@
-import {
-  createContext, useReducer, FC, useState
-} from "react";
+import {createContext, FC, useReducer} from "react";
 import {useNavigate} from "react-router-dom";
 
 interface IContextProps {

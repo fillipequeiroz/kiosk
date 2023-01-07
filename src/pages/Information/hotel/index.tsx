@@ -1,55 +1,59 @@
 import {Box, Center, Flex, GridItem, SimpleGrid, Text} from "@chakra-ui/react";
-import React, {Fragment} from "react";
+import React, {Fragment, useState} from "react";
 import {BsClock, BsTelephoneFill, BsWifi} from "react-icons/bs";
 import {DefaultLabel} from "../../../component/Label";
 import {GiHanger} from "react-icons/gi";
 import {InfoButtons} from "../../../component/Button/InfoButtons";
+import useFetch from "../../../hooks/useFetch";
+import {hotelInfoMock} from "../../../mocks/hotel.info.mock";
+import _ from 'lodash';
 
 export const HotelInfo = () => {
 
+  let {data} = useFetch('https://jsonplaceholder.typicode.com/posts', null);
+  data = hotelInfoMock;
 
-  let fragment = <><Fragment>
+  const [wifi] = useState(_.first(_.get(data, 'wifi')));
+  const [hotelTime] = useState(_.get(data, 'hotelTime'));
+  const [amenities] = useState(_.get(data, 'amenities'));
+  const [phone] = useState(_.get(data, 'phone'));
+
+  return <Fragment>
     <Center mt={5}>
       <Text textAlign={['center']} w="100%" fontSize="34" fontWeight={600} color={"#121212"}>
         Hotel policy
       </Text>
     </Center>
 
-    <InfoButtons selected={"hotel"} />
+    <InfoButtons selected={"hotel"}/>
 
+    <SimpleGrid columns={2} columnGap={25} ml={10} mr={10} mt={5} mb={5}>
 
-    <SimpleGrid columns={2} columnGap={25} ml={10} mr={10} mt={5}>
       <GridItem alignItems={"left"}>
         <Flex alignItems={"center"}>
           <Text textAlign={['left']} fontSize="22" fontWeight={700} color={"#121212"}>
             Wifi
           </Text>
           <Box ml={5}>
-            <BsWifi size={40}></BsWifi>
+            <BsWifi size={25}></BsWifi>
           </Box>
         </Flex>
-        <DefaultLabel text={"Network:"} valueLabel={"BR"} mt={0}/>
-        <DefaultLabel text={"Guest password:"} valueLabel={"Brisa8342"} mt={0}/>
-        <DefaultLabel text={"Home page password:"} valueLabel={"Brisa"} mt={0}/>
-        <DefaultLabel text={""} valueLabel={"Connect a computer / phone to Wi-Fi for guests"} mt={10}/>
-        <DefaultLabel text={"1. Turn on Wifi"} valueLabel={""} mt={0}/>
-        <DefaultLabel text={"2. Connect to BR+convidado"} valueLabel={""} mt={0}/>
-        <DefaultLabel text={"3. Enter the password: Brisa 8342"} valueLabel={""} mt={0}/>
-        <DefaultLabel text={"4. The home page appears, so enther the password 'Brisa' and check the box below it"}
-                      valueLabel={""} mt={0}/>
-        <DefaultLabel text={"5. You are connecter!"} valueLabel={""} mt={0}/>
+        <DefaultLabel text={"Network:"} valueLabel={_.get(wifi, 'networkName')} mt={0}/>
+        <DefaultLabel text={"Guest password:"} valueLabel={_.get(wifi, 'guestPassword')} mt={0}/>
+        <DefaultLabel text={"Home page password:"} valueLabel={_.get(wifi, 'homePagePassword')} mt={0}/>
+        <DefaultLabel text={""} valueLabel={_.get(wifi, 'instructions')} mt={10}/>
 
         <Flex alignItems={"center"} mt={16}>
           <Text textAlign={['left']} fontSize="22" fontWeight={700} color={"#121212"}>
             Check in / Check out time
           </Text>
           <Box ml={5}>
-            <BsClock size={40}></BsClock>
+            <BsClock size={25}></BsClock>
           </Box>
         </Flex>
 
-        <DefaultLabel text={"Check in"} valueLabel={"4pm"} mt={10}/>
-        <DefaultLabel text={"Check out"} valueLabel={"11am"} mt={0}/>
+        <DefaultLabel text={"Check in:"} valueLabel={_.get(hotelTime, 'checkin')} mt={10}/>
+        <DefaultLabel text={"Check out:"} valueLabel={_.get(hotelTime, 'checkout')} mt={0}/>
       </GridItem>
       <GridItem>
 
@@ -59,19 +63,36 @@ export const HotelInfo = () => {
             Amenities
           </Text>
           <Box ml={5}>
-            <GiHanger size={30}></GiHanger>
+            <GiHanger size={25}></GiHanger>
           </Box>
         </Flex>
 
-        <DefaultLabel text={""} valueLabel={"Laundry -3rd floor"} mt={0}/>
+        <DefaultLabel text={""} valueLabel={amenities ? amenities[0]['title'] : ''} mt={0}/>
         <Text textAlign={['left']} fontSize="22" fontWeight={400} color={"#121212"}>
-          Washing and dryin machines $ 3.50 each Rooms accept, <b>Credit / Debit Card (1st and 2nd Floor -</b>
-          Request Access Key) Market, ice machine, cash machine, swimming pool and businesse center in the lobby
+          {
+            amenities ? amenities[0]['description'] : ''
+          }
+          &nbsp;
+          <b>
+          {
+            amenities ? amenities[1]['title'] : ''
+          }
+          </b>
+          {
+            amenities ? amenities[1]['description'] : ''
+          }
         </Text>
 
         <Text textAlign={['left']} fontSize="22" fontWeight={400} color={"#121212"} mt={10}>
-          <b>Obs.:</b> Please, if possible, leave the AC unit inside the rooms on at all times around 70-72 degrees
-          because of the high humidity in FLorida
+          <b>
+            {
+              amenities ? amenities[2]['title'] : ''
+            }
+          </b>
+          &nbsp;
+          {
+            amenities ? amenities[2]['description'] : ''
+          }
         </Text>
 
 
@@ -80,14 +101,13 @@ export const HotelInfo = () => {
             Telephone
           </Text>
           <Box ml={5}>
-            <BsTelephoneFill size={30}></BsTelephoneFill>
+            <BsTelephoneFill size={25}></BsTelephoneFill>
           </Box>
         </Flex>
-        <DefaultLabel text={"Free local calls, dial directly"} valueLabel={""} mt={10}/>
+        <DefaultLabel text={_.get(phone, 'description')} valueLabel={""} mt={10}/>
       </GridItem>
     </SimpleGrid>
 
-  </Fragment></>;
-  return fragment;
+  </Fragment>;
 
 }

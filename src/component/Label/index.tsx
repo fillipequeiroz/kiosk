@@ -1,11 +1,5 @@
-import {Box, Center, Flex, Text} from "@chakra-ui/react";
-import React, {FC, Fragment, useEffect, useState} from "react";
-import {HomeButtons} from "../Button/HomeButtons";
-import {ReservationButtons} from "../Button/ReservationButtons";
-import {BackButton} from "../Button/BackButton";
-import {useNavigate} from "react-router-dom";
-
-const HomeImage = require("../../assets/images/home_expand.png")
+import {Text} from "@chakra-ui/react";
+import React, {FC} from "react";
 
 export const DefaultLabel: FC<{ text: string | undefined, valueLabel: string | undefined, mt: number }> = (props) => {
 

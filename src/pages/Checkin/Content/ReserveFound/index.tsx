@@ -45,7 +45,7 @@ export const ReserveFound = () => {
           </Text>
         </Box>
       </Center>
-      <Center w={"100%"} mr={10}>
+      <Center w={"100%"} mr={10} mt={3}>
         <Box border="2px solid #D0D5DD" w="50%"></Box>
       </Center>
 
@@ -65,7 +65,7 @@ export const ReserveFound = () => {
         </Box>
       </Center>
 
-      <Center w={"100%"} mr={10}>
+      <Center w={"100%"} mr={10} mt={3}>
         <Box border="2px solid #D0D5DD" w="50%"></Box>
       </Center>
 
