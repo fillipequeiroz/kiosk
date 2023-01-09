@@ -6,6 +6,7 @@ export const CLOSE_KEYBOARD = 'CLOSE_KEYBOARD'
 export const CHANGE_INPUT_NAME = 'CHANGE_INPUT_NAME'
 export const REMOVE_GUEST = 'REMOVE_GUEST'
 export const ADD_GUEST = 'ADD_GUEST'
+export const VALIDATE_FIELDS = 'VALIDATE_FIELDS'
 
 
 

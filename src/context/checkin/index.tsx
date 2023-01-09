@@ -1,8 +1,7 @@
-import {createContext, FC, useReducer, useRef, useState} from "react";
+import {createContext, FC, useReducer} from "react";
 import {useNavigate} from "react-router-dom";
 import {data} from "./data";
 import * as actions from "./actions";
-import {OPEN_KEYBOARD} from "./actions";
 
 interface IContextProps {
   state: {
@@ -15,6 +14,17 @@ interface IContextProps {
     count: number,
     inputsSearch: {},
     inputs: {},
+    inputsCustomerInfo: {},
+    fieldsCustomerInfo: [
+      { "phone": { value: '', error: boolean } },
+      { "zipcode": { value: '', error: boolean } },
+      { "country": { value: '', error: boolean } },
+      { "email": { value: '', error: boolean } },
+      { "address": { value: '', error: boolean } },
+      { "city": { value: '', error: boolean } },
+      { "state": { value: '', error: boolean } },
+    ],
+    customerInfoValid: boolean,
     keyboard: any,
     keyboardVisibility: string,
     opacity: number,
@@ -30,7 +40,8 @@ interface IContextProps {
   closeKeyboard: () => any;
   handleAddNewAdditionalGuest: () => any;
   getValueFromState: (attribute: string) => any;
-
+  isValidField: (field: string, page: string) => boolean;
+  validateAllFields: (page: string) => any;
 
   setInputName(name: string): void;
 }
@@ -42,6 +53,7 @@ export const CheckinContextProvider: FC<{ children: JSX.Element }> = ({children}
 
   const navigate = useNavigate();
 
+  const INPUT_CUSTOMER_INFO = "inputsCustomerInfo";
 
 
   const reducer = (state: any, action: any) => {
@@ -68,6 +80,17 @@ export const CheckinContextProvider: FC<{ children: JSX.Element }> = ({children}
         if ("inputsSearch" === action.payload.page) {
           return {...state, inputsSearch: action.payload.inputs};
         }
+        if (INPUT_CUSTOMER_INFO === action.payload.page) {
+          const {fieldsCustomerInfo} = state;
+          fieldsCustomerInfo.map((input: any) => {
+            const attribute = Object.keys(input)[0];
+            const attributeValue = action.payload.inputs[attribute];
+            input[attribute]['error'] = !attributeValue;
+            input[attribute]['value'] = attributeValue;
+          });
+
+          return {...state, inputsCustomerInfo: action.payload.inputs};
+        }
         return {...state}
 
       case actions.OPEN_KEYBOARD:
@@ -86,6 +109,18 @@ export const CheckinContextProvider: FC<{ children: JSX.Element }> = ({children}
         newGuest['name' + state.count] = '';
         additionalGuests.push(newGuest);
         return {...state, additionalGuests, count: state.count + 1};
+      case actions.VALIDATE_FIELDS:
+        const {fieldsCustomerInfo} = state;
+        let customerInfoValid = true;
+        fieldsCustomerInfo.map((input: any) => {
+          let attribute = Object.keys(input)[0];
+          input[attribute]['error'] = !input[attribute]['value'];
+          if(customerInfoValid && input[attribute]['error']){
+            customerInfoValid = false;
+          }
+        })
+
+        return {...state, fieldsCustomerInfo, customerInfoValid};
     }
 
     return {...state}
@@ -168,6 +203,22 @@ export const CheckinContextProvider: FC<{ children: JSX.Element }> = ({children}
     return state[attribute];
   }
 
+  const isValidField = (field: string, page: string): boolean => {
+    if (INPUT_CUSTOMER_INFO === page) {
+      let fields = state.fieldsCustomerInfo.filter((input: any) => {
+        return Object.keys(input)[0] === field;
+      });
+      if (fields && fields[0]) {
+        return fields[0][field]['error'];
+      }
+    }
+    return false;
+  }
+
+  const validateAllFields = (page: string) => {
+    dispatch({type: actions.VALIDATE_FIELDS, payload: {page}});
+  }
+
   return (<CheckinContext.Provider value={{
     state,
     backStep,
@@ -180,6 +231,8 @@ export const CheckinContextProvider: FC<{ children: JSX.Element }> = ({children}
     handleAddNewAdditionalGuest,
     closeKeyboard,
     getInputValue,
-    getValueFromState
+    getValueFromState,
+    isValidField,
+    validateAllFields
   }}>{children}</CheckinContext.Provider>);
 }

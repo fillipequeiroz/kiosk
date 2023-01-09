@@ -24,7 +24,6 @@ export const Faq = () => {
 
           <Center>
             <Text textAlign={['left']} w="100%" fontSize="25" fontWeight={500} color={"#121212"} ml={10}>
-
               {idSelected === item._id ? item.answer : ''}
             </Text>
           </Center>

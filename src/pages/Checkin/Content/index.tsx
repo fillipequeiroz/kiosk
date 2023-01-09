@@ -30,9 +30,7 @@ export const CheckinContent = () => {
     case "3":
       return <Policy/>;
     case "4":
-      return <Fragment>
-        <AdditionalGuest/>
-      </Fragment>;
+      return <AdditionalGuest/>;
     case "5":
       return <Room/>;
     case "6":

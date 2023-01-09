@@ -1,5 +1,5 @@
 import {Box, Center, Flex, FormControl, FormLabel, GridItem, Input, SimpleGrid, Text, VStack} from "@chakra-ui/react";
-import React, {Fragment, useEffect, useRef, useState} from "react";
+import React, {Fragment, useState} from "react";
 import {PrimaryButton} from "../../../../component/Button/PrimaryButton";
 import {CheckinContext} from "../../../../context/checkin";
 import {toast} from "react-toastify";
@@ -35,6 +35,7 @@ export const ReserveSearch = () => {
 
     if (checkinCode) {
       clearErrorMessage();
+      context.closeKeyboard();
       return true;
     }
 
