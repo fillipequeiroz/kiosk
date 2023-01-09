@@ -10,9 +10,11 @@ import {
 } from "@chakra-ui/modal";
 import {Center, Checkbox, Flex, Table, TableContainer, Tbody, Td, Text, Th, Thead, Tr} from "@chakra-ui/react";
 import {PrimaryButton} from "../Button/PrimaryButton";
+import {CheckinContext} from "../../context/checkin";
 
 export const ModalReserve: FC<{ onOpen: any, isOpen: any, onClose: any, handleClickNextStep: any }> = (props) => {
 
+  const context = React.useContext(CheckinContext);
 
   return (
     <Modal isOpen={props.isOpen} onClose={props.onClose} size="6xl">

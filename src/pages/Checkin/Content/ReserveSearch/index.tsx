@@ -3,9 +3,9 @@ import React, {Fragment, useEffect, useRef, useState} from "react";
 import {PrimaryButton} from "../../../../component/Button/PrimaryButton";
 import {CheckinContext} from "../../../../context/checkin";
 import {toast} from "react-toastify";
-import Keyboard from "react-simple-keyboard";
 import {useDisclosure} from "@chakra-ui/hooks";
 import {ModalReserve} from "../../../../component/ModalReserve";
+import {KeyboardComponent} from "../../../../component/Keyboard";
 
 export const ReserveSearch = () => {
   const [checkinCodeError, setCheckinCodeError] = useState(false);
@@ -13,78 +13,19 @@ export const ReserveSearch = () => {
   const [lastnameError, setLastnameError] = useState(false);
   const context = React.useContext(CheckinContext);
 
-  const [inputs, setInputs] = useState({
-    checkinCode: context.state.checkinCode,
-    name: context.state.name,
-    lastname: context.state.lastname
-  });
-  const [layoutName, setLayoutName] = useState("default");
-  const [inputName, setInputName] = useState("default");
-  const keyboard = useRef();
-  const [keyboardVisibility, setKeyboardVisibility] = useState(false);
-
   const {isOpen, onOpen, onClose} = useDisclosure();
+  const INPUTS_PAGE = "inputsSearch";
 
-  useEffect(() => {
-    const clickHanlder = (e: any) => {
-      if (
-        !(e.target.nodeName === "INPUT") &&
-        !e.target.classList.contains("hg-button") &&
-        !e.target.classList.contains("hg-row")
-      ) {
-        setKeyboardVisibility(false);
-      }
-    }
-
-
-    window.addEventListener("click", clickHanlder);
-    return window.removeEventListener("click", clickHanlder, true);
-  }, []);
-
-
-  const clearInput = (input: any) => {
-    // @ts-ignore
-    context.state[input] = '';
-    setInputs({checkinCode: context.state.checkinCode, name: context.state.name, lastname: context.state.lastname});
+  const onChangeInput = (e: any) => {
+    console.log('alterar para funcionar no pai, isso é para escrever pelo teclado normal, não é tão importante')
   }
 
-  const onChangeAll = (inputs: any) => {
-    console.log('onChangeAll');
-    console.log(inputs);
-    // @ts-ignore
-    context.state[Object.keys(inputs)[0]] = inputs[Object.keys(inputs)[0]];
-    setInputs({checkinCode: context.state.checkinCode, name: context.state.name, lastname: context.state.lastname});
-  };
-
-  const handleShift = () => {
-    const newLayoutName = layoutName === "default" ? "shift" : "default";
-    setLayoutName(newLayoutName);
-  };
-
-  const onKeyPress = (button: any) => {
-    if (button === "{shift}" || button === "{lock}") handleShift();
-  };
-
-  const onChangeInput = (event: any) => {
-
-    const inputVal = event.target.value;
-    setInputs({
-      ...inputs,
-      [inputName]: inputVal
-    });
-
-    // @ts-ignore
-    keyboard?.current?.setInput(inputVal);
-  };
-
-  const getInputValue = (inputName: string) => {
-    // @ts-ignore
-    return inputs[inputName] || "";
-  };
-
-
   const validateForm = (): boolean => {
-    if (!context.state.checkinCode && !context.state.name && !context.state.lastname) {
+    const checkinCode = context.getInputValue('checkinCode', INPUTS_PAGE);
+    const name = context.getInputValue('name', INPUTS_PAGE);
+    const lastname = context.getInputValue('lastname', INPUTS_PAGE);
+
+    if (!checkinCode && !name && !lastname) {
       setCheckinCodeError(true);
       setNameError(true);
       setLastnameError(true);
@@ -92,24 +33,25 @@ export const ReserveSearch = () => {
       return false;
     }
 
-    if (context.state.checkinCode) {
+    if (checkinCode) {
       clearErrorMessage();
       return true;
     }
 
-    if (context.state.name && !context.state.lastname) {
+    if (name && !lastname) {
       setNameError(false);
       setLastnameError(true);
       toast.error('Please inform the lastname');
       return false;
     }
-    if (context.state.lastname && !context.state.name) {
+    if (lastname && !name) {
       setNameError(true);
       setLastnameError(false);
       toast.error('Please inform the name');
       return false;
     }
     clearErrorMessage();
+    context.closeKeyboard();
     return true;
   }
 
@@ -166,15 +108,13 @@ export const ReserveSearch = () => {
             <Input
               id='checkinCode'
               placeholder='Your reservation'
-              // onChange={(e) => context.state.checkinCode = e.target.value}
-              // defaultValue={context.state.checkinCode}
-              value={getInputValue("checkinCode")}
-              onChange={onChangeInput}
+              value={context.getInputValue("checkinCode", INPUTS_PAGE)}
+              onChange={(e) => onChangeInput(e)}
               onFocus={() => {
-                setKeyboardVisibility(true);
-                setInputName("checkinCode");
-                clearInput("checkinCode");
+                context.openKeyboard()
+                context.setInputName("checkinCode");
               }}
+
             />
 
           </FormControl>
@@ -215,13 +155,11 @@ export const ReserveSearch = () => {
                 <Input
                   id='name'
                   placeholder='Name'
-                  value={getInputValue("name")}
-                  onChange={onChangeInput}
+                  value={context.getInputValue("name", INPUTS_PAGE)}
+                  onChange={(e) => onChangeInput(e)}
                   onFocus={() => {
-                    setKeyboardVisibility(false);
-                    setKeyboardVisibility(true);
-                    setInputName("name");
-                    clearInput("name");
+                    context.openKeyboard()
+                    context.setInputName("name");
                   }}
                 />
               </FormControl>
@@ -234,13 +172,11 @@ export const ReserveSearch = () => {
                 <Input
                   id='lastname'
                   placeholder='Last name'
-                  value={getInputValue("lastname")}
-                  onChange={onChangeInput}
+                  value={context.getInputValue("lastname", INPUTS_PAGE)}
+                  onChange={(e) => onChangeInput(e)}
                   onFocus={() => {
-                    setKeyboardVisibility(false);
-                    setKeyboardVisibility(true);
-                    setInputName("lastname");
-                    clearInput("lastname");
+                    context.openKeyboard()
+                    context.setInputName("lastname");
                   }}
                 />
               </FormControl>
@@ -252,6 +188,8 @@ export const ReserveSearch = () => {
         </form>
       </Box>
 
+      <KeyboardComponent page={INPUTS_PAGE} />
+
       <Center mb={10}>
         <PrimaryButton text={'Confirm'} click={handleClickNextStep} mt={10} ml={0}/>
       </Center>
@@ -259,16 +197,7 @@ export const ReserveSearch = () => {
       <ModalReserve onOpen={onOpen} handleClickNextStep={nexPage} isOpen={isOpen}
                     onClose={onClose}></ModalReserve>
 
-      {keyboardVisibility && (
-        <Keyboard
-          keyboardRef={(r) => (keyboard.current = r)}
-          layoutName={layoutName}
-          onChangeAll={onChangeAll}
-          onKeyPress={onKeyPress}
-          inputName={inputName}
 
-        />
-      )}
     </Fragment>
   );
 

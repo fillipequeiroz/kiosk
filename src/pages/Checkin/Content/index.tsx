@@ -14,12 +14,15 @@ import {Faq} from "../../faq";
 import {TransportInfo} from "../../Information/transport";
 import {CovidInfo} from "../../Information/covid";
 
+
 export const CheckinContent = () => {
+
+
   const params = useParams();
 
   switch (params.step) {
     case "0":
-      return <ReserveSearch/>;
+      return <Fragment><ReserveSearch/> </Fragment>;
     case "1":
       return <ReserveFound/>;
     case "2":
@@ -27,7 +30,9 @@ export const CheckinContent = () => {
     case "3":
       return <Policy/>;
     case "4":
-      return <AdditionalGuest/>;
+      return <Fragment>
+        <AdditionalGuest/>
+      </Fragment>;
     case "5":
       return <Room/>;
     case "6":

@@ -1,4 +1,4 @@
-import React, {FC, useState} from "react";
+import React, {FC, useEffect, useState} from "react";
 import {
   Modal,
   ModalBody,
@@ -11,23 +11,25 @@ import {
 import {Box, Center, Text} from "@chakra-ui/react";
 import {BsCheckSquareFill} from "react-icons/bs";
 import {GrCheckbox} from "react-icons/gr";
+import useFetch from "../../hooks/useFetch";
+import {policiesMock} from "../../mocks/policies";
+import _ from "lodash";
+import {CheckinContext} from "../../context/checkin";
 
-export const ModalPolicy:FC<{title : string,content: string[], onOpen:any, isOpen:any, onClose: any, agree: string}> = (props) => {
+export const ModalPetPolicy:FC<{ onOpen:any, isOpen:any, onClose: any, agree: string}> = (props) => {
 
   const style = {color: "#0D8845", size: "60"}
+  let {data} = useFetch('https://jsonplaceholder.typicode.com/posts', null);
+  data = policiesMock;
 
-  const [checked, setChecked] = useState(false);
+  const context = React.useContext(CheckinContext);
+  const [checked, setChecked] = useState(context.state.petPolicyChecked);
+  const [petPolicy] = useState(_.get(_.last(policiesMock), 'description'));
 
-  const contentIterate = () =>{
-    const listItems = props.content.map((item) =>
-      <li key={item}>
-        <Text textAlign={['left']} w="100%" fontSize="20px" fontWeight={400} color={"#1A1A1A"} >
-        {item}</Text>
-        </li>
-    );
+  useEffect(() => {
+    context.state.petPolicyChecked = checked;
+  }, [checked]);
 
-    return (<ul>{listItems}</ul>);
-  }
 
   const handleCheckReadPolicy = () => {
     setChecked(!checked);
@@ -38,10 +40,10 @@ export const ModalPolicy:FC<{title : string,content: string[], onOpen:any, isOpe
     <Modal isOpen={props.isOpen} onClose={props.onClose} size="6xl" >
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>{props.title}</ModalHeader>
+        <ModalHeader>PETS POLICY</ModalHeader>
         <ModalCloseButton />
         <ModalBody ml={10}>
-          {contentIterate()}
+          {petPolicy}
         </ModalBody>
 
         <Center w={"100%"} mr={10} mt={10}>

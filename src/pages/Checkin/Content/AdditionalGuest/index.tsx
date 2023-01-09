@@ -1,44 +1,44 @@
 import {Box, Center, Flex, FormControl, FormLabel, GridItem, Input, SimpleGrid, Switch, Text} from "@chakra-ui/react";
-import React, {Fragment, useState} from "react";
+import React, {Fragment, useEffect, useState} from "react";
 import {PrimaryButton} from "../../../../component/Button/PrimaryButton";
 import {CheckinContext} from "../../../../context/checkin";
 import {MdPets} from "react-icons/md";
-import {IoMdAddCircle} from "react-icons/io";
+import {IoMdAddCircle, IoMdRemoveCircle} from "react-icons/io";
 import {useDisclosure} from "@chakra-ui/hooks";
-import {ModalPolicy} from "../../../../component/ModalPolicy";
+import {ModalPetPolicy} from "../../../../component/ModalPetPolicy";
 import {PolicyButton} from "../../../../component/Button/PolicyButton";
-
+import {toast} from "react-toastify";
+import {KeyboardComponent} from "../../../../component/Keyboard";
 
 export const AdditionalGuest = () => {
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const style = {color: "#0D8845", size: "20"}
+  const styleRemove = {color: "#D92D20", size: "20"}
+  const INPUTS_PAGE = "inputs";
 
   const context = React.useContext(CheckinContext);
-  const style = {color: "#0D8845", size: "20"}
+
+  const {isOpen, onOpen, onClose} = useDisclosure();
+  const [visitingPetChecked, setVisitingPetChecked] = useState(context.state.visitingPet)
+
+  useEffect(() => {
+    context.state.visitingPet = visitingPetChecked;
+  }, [visitingPetChecked]);
 
   const handleClickNextStep = () => {
+    if (context.state.visitingPet && !context.state.petPolicyChecked) {
+      toast.error("Please, check pet consent.")
+      return;
+    }
+    context.closeKeyboard();
     context.fowardStep(context.state.step + 1);
   }
-  const [guests, setGuests] = useState([{id: 1, 'name': ''}])
-  const petPolicyItems = [
-    'The hotel accepts pets and welcomes 1 animal per room (no more than $ 80) and is free, provided the guest declares the pet at checkin.',
-    'Guests must ensure that their pet will not disturb other guests and / or hotel staff in any way. In the event that the pet is considerer dangerous, ' +
-    'harmful or disturbing at the discretion of the hotel itself, the hotel may request guests to find other accommodation and, eventually, ' +
-    'animal control authorities to remove it.',
-    'If the pet causes damage to the property, the property will charge the guest the amount corresponding to the damage.',
-    'The pet must always be on a leash or on a carrier',
-    'Pets are not allowed in the pool area',
-    'Guests are required to clean the pet (inside or outside)',
-    'Guests they must never leave the animal unattended in the room or on the hotel premises and must keep the animal under their control at all times.'
-  ];
 
-  const handleAddNewAdditionalGuest = () => {
-    guests.push({id: guests.length + 1, 'name': ''});
-    setGuests([...guests]);
+  const onChangeInput = (event: { target: { value: any; }; }, index: number) => {
+    console.log('trocar esse onChangeInput');
   }
 
   return (
-
     <Fragment>
       <Box ml={50} mr={50}>
         <Center>
@@ -59,7 +59,7 @@ export const AdditionalGuest = () => {
 
         <SimpleGrid columns={2} mt={10}>
           <GridItem>
-            <Box ml={5} mr={5}>
+            <Box ml={5} mr={5} id={"additionalguestsid"}>
               <Text textAlign={['left']} w="100%" fontSize="20" fontWeight={600} color={"#121212"}>
                 Additional guest
               </Text>
@@ -69,26 +69,42 @@ export const AdditionalGuest = () => {
                 we'll work to find the best possible solution.
               </Text>
 
-
               {
-                guests.map((guest, index) => (
+                context.state.additionalGuests.map((guest, index) => (
                   <Box mt={5} key={guest.id}>
-                    <FormLabel htmlFor='guestname' fontWeight={400} color={"#121212"} fontSize="16" fontFamily={"Inter"}
+                    <FormLabel htmlFor={'name' + guest.id} fontWeight={400} color={"#121212"} fontSize="16"
+                               fontFamily={"Inter"}
                                width="50%">
                       Guest Name</FormLabel>
 
-                        <Flex>
-                          <Input
-                            id='guestname'
-                          />
-                          {
-                            guests.length - 1 === index ?
+                    <Flex>
+                      <Input
+                        name={"name" + guest.id}
+                        id={'name' + guest.id}
+                        value={context.getInputValueFromAdditionalGuests("name", guest.id)}
+                        defaultValue={context.getInputValueFromAdditionalGuests("name", guest.id)}
+                        onChange={(e) => onChangeInput(e, guest.id)}
+                        onFocus={() => {
+                          context.openKeyboard()
+                          context.setInputName("name" + guest.id);
+                        }}
+
+                      />
+                      {
+                        (index < context.state.additionalGuests.length && index > 0) ?
+                          <IoMdRemoveCircle style={styleRemove} size={50} cursor="pointer"
+                                            onClick={() => context.handleRemoveAdditionalGuest(guest.id)}> </IoMdRemoveCircle>
+                          :
+                          ''
+                      }
+                      {
+                        context.state.additionalGuests.length - 1 === index ?
                           <IoMdAddCircle style={style} size={50} cursor="pointer"
-                                         onClick={handleAddNewAdditionalGuest}> </IoMdAddCircle>
-                              :
-                              ''
-                          }
-                        </Flex>
+                                         onClick={context.handleAddNewAdditionalGuest}> </IoMdAddCircle>
+                          :
+                          ''
+                      }
+                    </Flex>
 
                   </Box>
                 ))
@@ -119,7 +135,9 @@ export const AdditionalGuest = () => {
                     <Text textAlign={['center']} w="100%" fontSize="16" fontWeight={700} color={"#1A1A1A"} mr={3}>
                       No
                     </Text>
-                    <Switch id='email-alerts'/>
+                    <Switch id='email-alerts'
+                            isChecked={visitingPetChecked}
+                            onChange={() => setVisitingPetChecked(!visitingPetChecked)}/>
                     <Text textAlign={['center']} w="100%" fontSize="16" fontWeight={700} color={"#1A1A1A"} ml={3}>
                       Yes
                     </Text>
@@ -135,8 +153,9 @@ export const AdditionalGuest = () => {
               <Center>
                 <PolicyButton onOpen={onOpen} label={"Pets Policy"} h={45} mt={0}/>
               </Center>
-              <ModalPolicy title="PETS POLICY" content={petPolicyItems} onOpen={onOpen} isOpen={isOpen} onClose={onClose}
-                agree={"I read and agree with the terms"}/>
+              <ModalPetPolicy onOpen={onOpen} isOpen={isOpen}
+                              onClose={onClose}
+                              agree={"I read and agree with the terms"}/>
             </Box>
             <Center w={"100%"} mr={10} mt={10}>
               <Box border="1px solid #949494" w="90%"></Box>
@@ -155,19 +174,19 @@ export const AdditionalGuest = () => {
         </SimpleGrid>
       </Box>
 
+      <KeyboardComponent page={INPUTS_PAGE} />
+
       <Center>
         <PrimaryButton text={'Next'} click={handleClickNextStep} mt={5} ml={0}/>
       </Center>
 
       <Center>
-
         <Box>
           <Text w="100%" fontSize="18" fontWeight={700} color={"#121212"} mb={3} mt={3}>
             {context.state.step}/{context.state.totalSteps}
           </Text>
         </Box>
       </Center>
-
 
 
     </Fragment>
