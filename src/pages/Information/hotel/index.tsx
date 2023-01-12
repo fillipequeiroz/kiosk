@@ -4,7 +4,6 @@ import {BsClock, BsTelephoneFill, BsWifi} from "react-icons/bs";
 import {DefaultLabel} from "../../../component/Label";
 import {GiHanger} from "react-icons/gi";
 import {InfoButtons} from "../../../component/Button/InfoButtons";
-import {hotelInfoMock} from "../../../mocks/hotel.info.mock";
 import _ from 'lodash';
 
 export const HotelInfo = () => {
