@@ -5,13 +5,12 @@ import {CheckinContext} from "../../../../context/checkin";
 import {BsCheckSquareFill} from "react-icons/bs";
 import {GrCheckbox} from "react-icons/gr";
 import _ from "lodash";
-import useFetch from "../../../../hooks/useFetch";
 import {policiesMock} from "../../../../mocks/policies";
 import {toast} from "react-toastify";
 
 export const Policy = () => {
-  let {data} = useFetch('https://jsonplaceholder.typicode.com/posts', null);
-  data = policiesMock;
+  // let {data} = useFetch('https://jsonplaceholder.typicode.com/posts', null);
+  const data = policiesMock;
   const [hotelPolicy] = useState(_.get(_.first(policiesMock), 'description'));
 
 

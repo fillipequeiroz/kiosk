@@ -3,7 +3,7 @@ import React, {Fragment} from "react";
 import {PrimaryButton} from "../../../../component/Button/PrimaryButton";
 import {CheckinContext} from "../../../../context/checkin";
 
-export const ReserveFound = () => {
+export const BookingFound = () => {
 
   const context = React.useContext(CheckinContext);
   const handleClickNextStep = () => {
@@ -60,7 +60,7 @@ export const ReserveFound = () => {
       <Center>
         <Box>
           <Text textAlign={['left']} w="100%" fontSize="34" fontWeight={600} color={"#121212"}>
-            1151 - 111111111
+            {context.getValueFromState('bookingCode')}
           </Text>
         </Box>
       </Center>
@@ -71,7 +71,7 @@ export const ReserveFound = () => {
 
       <Box ml={20} mt={5} mr={20}>
         <Text textAlign={['left']} w="100%" fontSize="22" fontWeight={600} color={"#000000"}>
-          Check in: Oct 27 2020 at 4pm | Check out: Oct 30 2020 at 11am
+          Check in: {context.getValueFromState('checkinDate')} | Check out: {context.getValueFromState('checkoutDate')}
         </Text>
       </Box>
 

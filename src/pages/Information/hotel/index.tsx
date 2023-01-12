@@ -1,22 +1,31 @@
 import {Box, Center, Flex, GridItem, SimpleGrid, Text} from "@chakra-ui/react";
-import React, {Fragment, useState} from "react";
+import React, {Fragment, useEffect, useState} from "react";
 import {BsClock, BsTelephoneFill, BsWifi} from "react-icons/bs";
 import {DefaultLabel} from "../../../component/Label";
 import {GiHanger} from "react-icons/gi";
 import {InfoButtons} from "../../../component/Button/InfoButtons";
-import useFetch from "../../../hooks/useFetch";
 import {hotelInfoMock} from "../../../mocks/hotel.info.mock";
 import _ from 'lodash';
 
 export const HotelInfo = () => {
 
-  let {data} = useFetch('https://jsonplaceholder.typicode.com/posts', null);
-  data = hotelInfoMock;
+  const API_URL = process.env.REACT_APP_API_URL;
+  const [wifi, setWifi] = useState();
+  const [hotelTime, setHotelTime] = useState();
+  const [amenities, setAmenities] = useState();
+  const [phone, setPhone] = useState();
 
-  const [wifi] = useState(_.first(_.get(data, 'wifi')));
-  const [hotelTime] = useState(_.get(data, 'hotelTime'));
-  const [amenities] = useState(_.get(data, 'amenities'));
-  const [phone] = useState(_.get(data, 'phone'));
+  useEffect(() => {
+    fetch(API_URL + 'hotel')
+      .then((res) => res.json())
+      .then((res) => {
+        setWifi(_.first(_.get(res, 'wifi')));
+        setHotelTime(_.get(res, 'hotelTime'));
+        setAmenities(_.get(res, 'amenities'));
+        setPhone(_.get(res, 'phone'));
+      });
+
+  }, [API_URL]);
 
   return <Fragment>
     <Center mt={5}>
@@ -74,9 +83,9 @@ export const HotelInfo = () => {
           }
           &nbsp;
           <b>
-          {
-            amenities ? amenities[1]['title'] : ''
-          }
+            {
+              amenities ? amenities[1]['title'] : ''
+            }
           </b>
           {
             amenities ? amenities[1]['description'] : ''

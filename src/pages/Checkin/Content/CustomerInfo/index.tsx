@@ -1,6 +1,5 @@
 import {Box, Center, FormControl, FormLabel, GridItem, Input, SimpleGrid, Text} from "@chakra-ui/react";
 import React, {Fragment} from "react";
-import './index.css';
 import {PrimaryButton} from "../../../../component/Button/PrimaryButton";
 import {CheckinContext} from "../../../../context/checkin";
 import {KeyboardComponent} from "../../../../component/Keyboard";
@@ -12,10 +11,10 @@ export const CustomerInfo = () => {
 
   const INPUTS_PAGE = "inputsCustomerInfo";
 
-  const handleClickNextStep = () => {
-    context.validateAllFields(INPUTS_PAGE);
+  const handleClickNextStep = async () => {
+    await context.validateAllFields(INPUTS_PAGE);
 
-    if (!context.getValueFromState("customerInfoValid")) {
+    if (!context.isCustomerInfoFormValid()) {
       toast.error('Please, fill in the fields below.');
     } else {
       context.fowardStep(context.state.step + 1);
@@ -68,7 +67,7 @@ export const CustomerInfo = () => {
               </FormControl>
             </GridItem>
 
-            <GridItem>
+            <GridItem colSpan={2}>
               <FormControl isInvalid={context.isValidField("zipcode", INPUTS_PAGE)}>
                 <FormLabel htmlFor='zipcode' fontWeight={400} color={"#121212"} fontSize="16" fontFamily={"Inter"}>Zip
                   Code*</FormLabel>
@@ -82,14 +81,6 @@ export const CustomerInfo = () => {
                   }}
                 />
               </FormControl>
-            </GridItem>
-
-            <GridItem alignSelf="self-end">
-              <Box w="191px" h="59px" backgroundColor={"#0D8845"} className="zipcode-button" id="zipcodebutton">
-                <Text textAlign={['center']} className="checkin-label" color={"#FFF"} fontSize={18} fontWeight={700}>
-                  Check Zip Code
-                </Text>
-              </Box>
             </GridItem>
 
             <GridItem>

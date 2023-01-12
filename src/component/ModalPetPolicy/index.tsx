@@ -11,7 +11,6 @@ import {
 import {Box, Center, Text} from "@chakra-ui/react";
 import {BsCheckSquareFill} from "react-icons/bs";
 import {GrCheckbox} from "react-icons/gr";
-import useFetch from "../../hooks/useFetch";
 import {policiesMock} from "../../mocks/policies";
 import _ from "lodash";
 import {CheckinContext} from "../../context/checkin";
@@ -19,8 +18,8 @@ import {CheckinContext} from "../../context/checkin";
 export const ModalPetPolicy:FC<{ onOpen:any, isOpen:any, onClose: any, agree: string}> = (props) => {
 
   const style = {color: "#0D8845", size: "60"}
-  let {data} = useFetch('https://jsonplaceholder.typicode.com/posts', null);
-  data = policiesMock;
+  // let {data} = useFetch('https://jsonplaceholder.typicode.com/posts', null);
+  const data = policiesMock;
 
   const context = React.useContext(CheckinContext);
   const [checked, setChecked] = useState(context.state.petPolicyChecked);

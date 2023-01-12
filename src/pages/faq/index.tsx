@@ -1,37 +1,54 @@
-import {Card, CardBody, Center, Text} from "@chakra-ui/react";
-import React, {Fragment, useState} from "react";
-import {FaqMock} from "../../mocks/faq.mock";
+import {
+  Accordion,
+  AccordionButton,
+  AccordionIcon,
+  AccordionItem,
+  AccordionPanel,
+  Box,
+  Center,
+  Text
+} from "@chakra-ui/react";
+import React, {Fragment, useEffect, useState} from "react";
 
 export const Faq = () => {
 
-  // let {data} = useFetch('https://jsonplaceholder.typicode.com/posts', null);
-  // data = FaqMock;
-  const questions: ({ createdAt: string; question: string; answer: string; _id: string; hotelId: string; category: string; updatedAt: string } | { createdAt: string; question: string; answer: string; _id: string; hotelId: string; category: string; updatedAt: string } | { createdAt: string; question: string; answer: string; _id: string; hotelId: string; category: string; updatedAt: string } | { createdAt: string; question: string; answer: string; _id: string; hotelId: string; category: string; updatedAt: string } | { createdAt: string; question: string; answer: string; _id: string; hotelId: string; category: string; updatedAt: string } | { createdAt: string; question: string; answer: string; _id: string; hotelId: string; category: string; updatedAt: string } | { createdAt: string; question: string; answer: string; _id: string; hotelId: string; category: string; updatedAt: string } | { createdAt: string; question: string; answer: string; _id: string; hotelId: string; category: string; updatedAt: string })[] = FaqMock;
+  const API_URL = process.env.REACT_APP_API_URL;
 
-  const [idSelected, setIdSelected] = useState("");
+  const [questions, setQuestions] = useState([])
 
-  const handleClickCard = (id: string) => {
-    (idSelected==="" || idSelected !== id) ? setIdSelected(id) : setIdSelected("");
-  }
+  useEffect(() => {
+    fetch(API_URL + 'hotel/faq')
+      .then((res) => res.json())
+      .then((res) => {
+        setQuestions(res.data);
+      });
+  }, [API_URL]);
+
+
   const contentQuestions = () => {
-    const listItems = questions.map((item) => (
-        <Fragment key={item._id}>
-          <Center mt={5} ml={10} mr={10} mb={5}>
-            <Card w={"100%"} onClick={() => handleClickCard(item._id)} cursor={"pointer"}>
-              <CardBody>{item.question}</CardBody>
-            </Card>
-          </Center>
+    return questions.map((item: any) => (
+      <Fragment key={item._id}>
 
-          <Center>
-            <Text textAlign={['left']} w="100%" fontSize="25" fontWeight={500} color={"#121212"} ml={10}>
-              {idSelected === item._id ? item.answer : ''}
-            </Text>
-          </Center>
-        </Fragment>
-      ))
-    ;
 
-    return (<ul>{listItems}</ul>);
+        <AccordionItem>
+          <h2>
+            <AccordionButton>
+              <Box as="span" flex='1' textAlign='left'>
+                {item.question}
+              </Box>
+              <AccordionIcon/>
+            </AccordionButton>
+          </h2>
+          <AccordionPanel pb={4}>
+            {item.answer}
+          </AccordionPanel>
+        </AccordionItem>
+
+
+      </Fragment>
+    ))
+      ;
+
   }
 
   return (
@@ -43,8 +60,9 @@ export const Faq = () => {
         </Text>
       </Center>
 
-      {contentQuestions()}
-
+      <Accordion allowToggle allowMultiple={false} defaultIndex={[0]}>
+        {contentQuestions()}
+      </Accordion>
 
     </Fragment>
 

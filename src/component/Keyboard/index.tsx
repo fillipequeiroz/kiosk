@@ -19,7 +19,8 @@ export const KeyboardComponent:FC<{page:string}> = (props) => {
   useEffect(() => {
     // @ts-ignore
     bottomRef.current?.scrollIntoView({behavior: 'smooth'});
-  }, [context.state.keyboardVisibility]);
+
+  }, [context.state?.keyboardVisibility]);
 
   const closeKeyboard = () => {
     context.closeKeyboard();
@@ -53,7 +54,7 @@ export const KeyboardComponent:FC<{page:string}> = (props) => {
 
 
   return (
-    <Box transition={"opacity 0.3s ease"} opacity={context.state.opacity} display={context.state.keyboardVisibility}
+    <Box transition={"opacity 0.3s ease"} opacity={context?.state?.opacity} display={context?.state?.keyboardVisibility}
          ref={bottomRef}
          id={"keyboardbox"} ml={10} mr={10} mb={10}
     >
@@ -63,7 +64,7 @@ export const KeyboardComponent:FC<{page:string}> = (props) => {
         layoutName={layoutName}
         onChangeAll={(inputs) => onChangeAll(inputs)}
         onKeyPress={onKeyPress}
-        inputName={context.state.inputName}
+        inputName={context?.state?.inputName}
 
       />
     </Box>);

@@ -1,10 +1,10 @@
 import React, {FC, Fragment, useEffect, useState} from "react";
 import {useParams} from "react-router";
 import {useNavigate} from "react-router-dom";
-import {Box, Center, Flex, Text} from "@chakra-ui/react";
-import {BackButton} from "../../component/Button/BackButton";
+import {Box, Center, Circle, Flex, Text} from "@chakra-ui/react";
 import {HomeButtons} from "../../component/Button/HomeButtons";
 import {ReservationButtons} from "../../component/Button/ReservationButtons";
+import {BsArrowLeft} from "react-icons/bs";
 
 const HomeImage = require("../../assets/images/home_expand.png")
 
@@ -37,7 +37,16 @@ export const Home = () => {
 
         <Flex alignItems="center" h="100%">
           {step === '2' ?
-            <BackButton breakWord={false} ml="10" mt="0" click={handleBackCheckin} isCheckin={false}/> : ''}
+            <Flex cursor="pointer" ml={10} mt={10} onClick={handleBackCheckin} position="absolute">
+
+              <Circle backgroundColor="#FFF" size="30">
+                <BsArrowLeft/>
+              </Circle>
+
+              <Text textAlign={['center']} w="100%" color="#FFF" fontSize="16" ml="2" mt="1" fontWeight={700}>
+                Back
+              </Text>
+            </Flex>: ''}
           <Text textAlign={['center']} w="100%" color="#FFF" fontSize="36">
             QDI Online Check-In
           </Text>

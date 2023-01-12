@@ -21,5 +21,9 @@ export const data = {
   inputs: {},
   keyboardVisibility: 'none',
   opacity: 0,
-  inputName: '',
+  checkinDate: undefined,
+  checkoutDate: undefined,
+  room: '',
+  bookingId: '',
+  lastStep: 0
 }

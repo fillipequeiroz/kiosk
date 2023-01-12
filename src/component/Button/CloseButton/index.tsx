@@ -7,12 +7,9 @@ export const CloseButton: React.FC<{ click: any }> = (props) => {
 
   const navigate = useNavigate();
 
-  const handleClickClose = () => {
-    navigate('/home/1');
-  }
   return (
     <Flex position={"absolute"} right={5} top={10} >
-      <Box width={70} cursor="pointer" onClick={handleClickClose}>
+      <Box width={70} cursor="pointer" onClick={props.click}>
         <Center>
           <Box>
             <Center>

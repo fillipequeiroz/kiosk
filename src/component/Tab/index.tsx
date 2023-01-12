@@ -26,25 +26,25 @@ export const TabComponent: FC<{ tabSelected: string, useCheckin: boolean }> = (p
     setCheckoutSelected(tab === pages.CHECKOUT_FLOW);
     setInfoSelected(tab === pages.INFORMATION_FLOW);
     setFaqSelected(tab === pages.FAQ_FLOW)
-    switch (tab){
+    switch (tab) {
       case pages.CHECKIN_FLOW:
-        navigate('/' +pages.CHECKIN_FLOW + '/' + checkinContext.state.step);
+        navigate('/' + pages.CHECKIN_FLOW + '/' + checkinContext.state.step);
         return;
       case pages.CHECKOUT_FLOW:
-        navigate('/' +pages.CHECKOUT_FLOW + '/' + checkoutContext.state.step);
+        navigate('/' + pages.CHECKOUT_FLOW + '/' + checkoutContext.state.step);
         return;
       case pages.INFORMATION_FLOW:
-        navigate(pages.INFORMATION_FLOW );
+        navigate(pages.INFORMATION_FLOW);
         return;
       case pages.FAQ_FLOW:
-        navigate(pages.FAQ_FLOW );
+        navigate(pages.FAQ_FLOW);
         return;
     }
   }
 
   return (
-    <Center overflow="auto" >
-      <Grid templateColumns='repeat(3, 1fr)' width={"50%"}  gap={5}>
+    <Center overflow="auto">
+      <Grid templateColumns='repeat(3, 1fr)' width={"50%"} gap={5}>
         {props.useCheckin ?
           <GridItem id="grid-item">
             <TabItemComponent label={"Checkin"}
@@ -62,8 +62,6 @@ export const TabComponent: FC<{ tabSelected: string, useCheckin: boolean }> = (p
             />
           </GridItem>
         }
-
-
 
 
         <GridItem>

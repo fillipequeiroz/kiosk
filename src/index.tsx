@@ -13,6 +13,7 @@ import {CheckoutContent} from "./pages/Checkout/Content";
 import 'react-toastify/dist/ReactToastify.css';
 import {ToastContainer} from "react-toastify";
 import 'simple-keyboard/build/css/index.css';
+import {Waiting} from "./component/Waiting";
 
 // @ts-ignore
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -31,6 +32,8 @@ root.render(
           <Route path="/checkout" element={<Checkout/>}>
             <Route path=":step" element={<CheckoutContent/>}/>
           </Route>
+
+          <Route path="/wait" element={<Waiting label={"Processing."} secondLabel={"Please, wait a second."}/>}/>
         </Routes>
       </BrowserRouter>
     </ChakraProvider>

@@ -1,20 +1,26 @@
 import {Center, Flex, GridItem, SimpleGrid, Text} from "@chakra-ui/react";
-import React, {Fragment, useState} from "react";
+import React, {Fragment, useEffect, useState} from "react";
 import {DefaultLabel} from "../../../component/Label";
 import {InfoButtons} from "../../../component/Button/InfoButtons";
-import useFetch from "../../../hooks/useFetch";
-import {hotelInfoMock} from "../../../mocks/hotel.info.mock";
 import _ from "lodash";
 
 export const TransportInfo = () => {
 
-  let {data} = useFetch('https://jsonplaceholder.typicode.com/posts', null);
-  data = hotelInfoMock;
+  const API_URL = process.env.REACT_APP_API_URL;
+  const [transportation, setTransportation] = useState();
+  const [busSchedules, setBusSchedules] = useState();
 
-  const [transportation] = useState(_.first(_.get(_.get(data, 'transportation'), 'tourism')));
-  const [busSchedules] = useState(_.get(_.get(data, 'transportation'), 'busSchedules'));
+  useEffect(() => {
+    fetch(API_URL + 'hotel')
+      .then((res) => res.json())
+      .then((res) => {
+        setTransportation(_.first(_.get(_.get(res, 'transportation'), 'tourism')));
+        setBusSchedules(_.get(_.get(res, 'transportation'), 'busSchedules'));
+      });
 
-  console.log(_.first(busSchedules));
+  }, [API_URL]);
+
+
   return (
     <Fragment>
       <Center mt={5}>

@@ -1,18 +1,25 @@
 import {Box, Center, Flex, Text} from "@chakra-ui/react";
-import React, {Fragment, useState} from "react";
+import React, {Fragment, useEffect, useState} from "react";
 import {DefaultLabel} from "../../../component/Label";
 import {InfoButtons} from "../../../component/Button/InfoButtons";
-import useFetch from "../../../hooks/useFetch";
 import {hotelInfoMock} from "../../../mocks/hotel.info.mock";
 import _ from "lodash";
 
 export const CovidInfo = () => {
 
-  let {data} = useFetch('https://jsonplaceholder.typicode.com/posts', null);
-  data = hotelInfoMock;
+  // let {data} = useFetch('https://jsonplaceholder.typicode.com/posts', null);
 
-  const [covid] = useState(_.get(data, 'covid'));
+  const API_URL = process.env.REACT_APP_API_URL;
+  const [covid, setCovid] = useState();
 
+  useEffect(() => {
+    fetch(API_URL + 'hotel')
+      .then((res) => res.json())
+      .then((res) => {
+        setCovid(_.get(res, 'covid'));
+      });
+
+  }, [API_URL]);
 
   return (
 

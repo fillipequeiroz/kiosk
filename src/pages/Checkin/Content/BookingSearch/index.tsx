@@ -6,18 +6,65 @@ import {toast} from "react-toastify";
 import {useDisclosure} from "@chakra-ui/hooks";
 import {ModalReserve} from "../../../../component/ModalReserve";
 import {KeyboardComponent} from "../../../../component/Keyboard";
+import {WAITING} from "../index";
 
-export const ReserveSearch = () => {
+export const BookingSearch = () => {
   const [checkinCodeError, setCheckinCodeError] = useState(false);
   const [nameError, setNameError] = useState(false);
   const [lastnameError, setLastnameError] = useState(false);
   const context = React.useContext(CheckinContext);
 
+  const API_URL = process.env.REACT_APP_API_URL;
   const {isOpen, onOpen, onClose} = useDisclosure();
   const INPUTS_PAGE = "inputsSearch";
 
   const onChangeInput = (e: any) => {
     console.log('alterar para funcionar no pai, isso é para escrever pelo teclado normal, não é tão importante')
+  }
+
+  const handleClickNextStep = () => {
+    if (!validateForm()) {
+      return;
+    }
+
+    const checkinCode = context.getInputValue('checkinCode', INPUTS_PAGE);
+    context.fowardStep(WAITING);
+    if (checkinCode) {
+      fetch(API_URL + 'reservations/' + checkinCode.toUpperCase())
+        .then((res) => res.json())
+        .then((res) => {
+          console.log(res);
+          if (res.code && res.code == '404') {
+            toast.error('Booking not found.')
+            context.backLastStep();
+          } else {
+            context.updateContextByBooking(res);
+            nexPage();
+          }
+
+        });
+    } else {
+      const name = context.getInputValue('name', INPUTS_PAGE);
+      const lastname = context.getInputValue('lastname', INPUTS_PAGE);
+      fetch(API_URL + 'reservations?firstName=' + name + '&lastName=' + lastname)
+        .then((res) => res.json())
+        .then((res) => {
+          console.log(res);
+          context.backLastStep();
+          if ((res.code && res.code == '404') || !res.data || res.data.length === 0) {
+            toast.error('Booking not found.')
+          } else {
+            if (res.data.length === 1) {
+              context.updateContextByBooking(res.data[0]);
+              nexPage();
+            } else {
+              context.updateContextByBooking(res);
+              onOpen();
+            }
+
+          }
+        });
+    }
   }
 
   const validateForm = (): boolean => {
@@ -60,19 +107,6 @@ export const ReserveSearch = () => {
     context.fowardStep(context.state.step + 1);
   }
 
-  const handleClickNextStep = () => {
-    if (!validateForm()) {
-      return;
-    }
-
-    //TODO aqui deverá verificar do retorno do back
-    const hasMoreThanOneReserve = true;
-    if (hasMoreThanOneReserve) {
-      onOpen();
-    } else {
-      nexPage();
-    }
-  }
 
   const clearErrorMessage = () => {
     setCheckinCodeError(false);
@@ -189,7 +223,7 @@ export const ReserveSearch = () => {
         </form>
       </Box>
 
-      <KeyboardComponent page={INPUTS_PAGE} />
+      <KeyboardComponent page={INPUTS_PAGE}/>
 
       <Center mb={10}>
         <PrimaryButton text={'Confirm'} click={handleClickNextStep} mt={10} ml={0}/>
