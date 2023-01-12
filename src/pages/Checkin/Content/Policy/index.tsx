@@ -9,8 +9,6 @@ import {policiesMock} from "../../../../mocks/policies";
 import {toast} from "react-toastify";
 
 export const Policy = () => {
-  // let {data} = useFetch('https://jsonplaceholder.typicode.com/posts', null);
-  const data = policiesMock;
   const [hotelPolicy] = useState(_.get(_.first(policiesMock), 'description'));
 
 
@@ -23,7 +21,7 @@ export const Policy = () => {
 
   useEffect(() => {
     context.state.policyChecked = checked;
-  }, [checked]);
+  }, [checked, context.state]);
 
 
   const handleCheckReadPolicy = () => {

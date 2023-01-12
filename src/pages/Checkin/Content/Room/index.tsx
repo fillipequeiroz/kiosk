@@ -47,8 +47,7 @@ export const Room = () => {
 
     }
 
-
-  }, []);
+  }, [API_URL, context]);
 
 
   return (

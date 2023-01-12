@@ -1,8 +1,7 @@
-import {createContext, FC, useEffect, useReducer, useRef, useState} from "react";
+import {createContext, FC, useEffect, useReducer, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {data} from "./data";
 import * as actions from "./actions";
-import {BACK_WAIT_PAGE} from "./actions";
 
 interface IContextProps {
   state: {
@@ -92,7 +91,7 @@ export const CheckinContextProvider: FC<{ children: JSX.Element }> = ({children}
         }
         if (INPUT_CUSTOMER_INFO === action.payload.page) {
           const {fieldsCustomerInfo} = state;
-          fieldsCustomerInfo.map((input: any) => {
+          fieldsCustomerInfo.forEach((input: any) => {
             const attribute = Object.keys(input)[0];
             const attributeValue = action.payload.inputs[attribute];
             input[attribute]['error'] = !attributeValue;
@@ -122,7 +121,7 @@ export const CheckinContextProvider: FC<{ children: JSX.Element }> = ({children}
       case actions.VALIDATE_FIELDS:
         const {fieldsCustomerInfo} = state;
         let customerInfoValid = true;
-        fieldsCustomerInfo.map((input: any) => {
+        fieldsCustomerInfo.forEach((input: any) => {
           let attribute = Object.keys(input)[0];
           input[attribute]['error'] = !input[attribute]['value'];
           if (customerInfoValid && input[attribute]['error']) {
@@ -187,7 +186,7 @@ export const CheckinContextProvider: FC<{ children: JSX.Element }> = ({children}
 
   const generateGuestArrayByInputs = (state: any, action: any) => {
     let newArrayGuest: any[] = [];
-    Object.keys(action.payload.inputs).map(key => {
+    Object.keys(action.payload.inputs).forEach(key => {
       const value = action.payload.inputs[key];
       const id = key.substring(4, key.length);
       let newGuest: any = {};
@@ -217,8 +216,7 @@ export const CheckinContextProvider: FC<{ children: JSX.Element }> = ({children}
     return {...state}
   }
 
-  const [checkinData, setCheckinData] = useState(data);
-  const [initialData] = useReducer(reducer, data);
+  const [checkinData] = useState(data);
   const [state, dispatch] = useReducer(reducer, checkinData);
 
   useEffect(() => {
@@ -299,7 +297,7 @@ export const CheckinContextProvider: FC<{ children: JSX.Element }> = ({children}
   const isCustomerInfoFormValid = (): boolean => {
     const {fieldsCustomerInfo} = state;
     let isFormValid = true;
-    fieldsCustomerInfo.map((input: any) => {
+    fieldsCustomerInfo.forEach((input: any) => {
       let attribute = Object.keys(input)[0];
       input[attribute]['error'] = !input[attribute]['value'];
       if (input[attribute]['error']) {

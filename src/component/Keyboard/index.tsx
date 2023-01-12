@@ -9,7 +9,7 @@ export const KeyboardComponent:FC<{page:string}> = (props) => {
   const context = React.useContext(CheckinContext);
   const bottomRef = useRef(null);
   const [layoutName, setLayoutName] = useState("default");
-  const [updateKeyboard, setUpdateKeyboard] = useState(false);
+  const [updateKeyboard] = useState(false);
   const keyboard = useRef(null);
 
   useEffect(() => {
@@ -31,13 +31,6 @@ export const KeyboardComponent:FC<{page:string}> = (props) => {
     setLayoutName(newLayoutName);
   };
 
-  const onChangeInput = (event: { target: { value: any; }; }, index: number) => {
-    const inputVal = event.target.value;
-    let newGuest: any = {};
-    newGuest['id'] = index;
-    newGuest['name' + index] = event.target.value;
-    context.state.keyboard.current.setInput(inputVal);
-  };
 
   const onKeyPress = (button: string) => {
     if (button === "{shift}" || button === "{lock}") handleShift();

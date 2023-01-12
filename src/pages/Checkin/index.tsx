@@ -1,5 +1,5 @@
 import {Box, Center, Flex} from "@chakra-ui/react";
-import React, {Fragment, useRef} from "react";
+import React, {Fragment} from "react";
 import {TabComponent} from "../../component/Tab";
 import {BackButton} from "../../component/Button/BackButton";
 import {Outlet, useNavigate} from "react-router-dom";

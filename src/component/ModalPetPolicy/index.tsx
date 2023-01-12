@@ -18,8 +18,6 @@ import {CheckinContext} from "../../context/checkin";
 export const ModalPetPolicy:FC<{ onOpen:any, isOpen:any, onClose: any, agree: string}> = (props) => {
 
   const style = {color: "#0D8845", size: "60"}
-  // let {data} = useFetch('https://jsonplaceholder.typicode.com/posts', null);
-  const data = policiesMock;
 
   const context = React.useContext(CheckinContext);
   const [checked, setChecked] = useState(context.state.petPolicyChecked);
@@ -27,7 +25,7 @@ export const ModalPetPolicy:FC<{ onOpen:any, isOpen:any, onClose: any, agree: st
 
   useEffect(() => {
     context.state.petPolicyChecked = checked;
-  }, [checked]);
+  }, [checked, context.state]);
 
 
   const handleCheckReadPolicy = () => {

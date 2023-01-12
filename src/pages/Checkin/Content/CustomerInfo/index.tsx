@@ -21,10 +21,6 @@ export const CustomerInfo = () => {
     }
   }
 
-  const isValidField = (field: string): boolean => {
-    return context.getInputValue(field, INPUTS_PAGE);
-  }
-
   const onChangeInput = (e: any) => {
     console.log('alterar para funcionar no pai, isso é para escrever pelo teclado normal, não é tão importante')
   }

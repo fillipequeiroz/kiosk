@@ -2,12 +2,9 @@ import {Box, Center, Flex, Text} from "@chakra-ui/react";
 import React, {Fragment, useEffect, useState} from "react";
 import {DefaultLabel} from "../../../component/Label";
 import {InfoButtons} from "../../../component/Button/InfoButtons";
-import {hotelInfoMock} from "../../../mocks/hotel.info.mock";
 import _ from "lodash";
 
 export const CovidInfo = () => {
-
-  // let {data} = useFetch('https://jsonplaceholder.typicode.com/posts', null);
 
   const API_URL = process.env.REACT_APP_API_URL;
   const [covid, setCovid] = useState();

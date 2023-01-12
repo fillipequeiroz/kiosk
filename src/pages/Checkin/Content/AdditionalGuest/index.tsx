@@ -23,7 +23,7 @@ export const AdditionalGuest = () => {
 
   useEffect(() => {
     context.state.visitingPet = visitingPetChecked;
-  }, [visitingPetChecked]);
+  }, [visitingPetChecked, context.state]);
 
   const handleClickNextStep = () => {
     if (context.state.visitingPet && !context.state.petPolicyChecked) {

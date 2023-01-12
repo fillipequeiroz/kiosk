@@ -1,11 +1,8 @@
 import {Box, Center, Circle, Flex, Text} from "@chakra-ui/react";
 import React from "react";
 import {GrClose} from "react-icons/gr";
-import {useNavigate} from "react-router-dom";
 
 export const CloseButton: React.FC<{ click: any }> = (props) => {
-
-  const navigate = useNavigate();
 
   return (
     <Flex position={"absolute"} right={5} top={10} >
