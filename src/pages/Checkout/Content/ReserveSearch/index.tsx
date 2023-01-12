@@ -3,7 +3,7 @@ import React, {Fragment} from "react";
 import {PrimaryButton} from "../../../../component/Button/PrimaryButton";
 import {CheckoutContext} from "../../../../context/checkout";
 import {useDisclosure} from "@chakra-ui/hooks";
-import {ModalReserve} from "../../../../component/ModalReserve";
+import {ModalBookings} from "../../../../component/ModalReserve";
 
 export const ReserveCheckoutSearch = () => {
 
@@ -98,7 +98,7 @@ export const ReserveCheckoutSearch = () => {
         <PrimaryButton text={'Confirm'} click={onOpen} mt={10} ml={0}/>
       </Center>
 
-      <ModalReserve onOpen={onOpen} handleClickNextStep={handleClickNextStep} isOpen={isOpen} onClose={onClose}></ModalReserve>
+      <ModalBookings onOpen={onOpen} handleClickNextStep={handleClickNextStep} isOpen={isOpen} onClose={onClose}></ModalBookings>
     </Fragment>
   );
 

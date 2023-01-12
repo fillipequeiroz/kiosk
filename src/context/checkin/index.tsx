@@ -33,7 +33,10 @@ interface IContextProps {
     bookingCode: string,
     room: string,
     bookingId: string,
-    lastStep: number
+    lastStep: number,
+    bookings: any,
+    bookingsSelecteds: any,
+    openBookings: boolean
   };
   backStep: (step: number) => void;
   fowardStep: (step: number) => void;
@@ -49,6 +52,7 @@ interface IContextProps {
   isValidField: (field: string, page: string) => boolean;
   validateAllFields: (page: string) => any;
   updateContextByBooking: (booking: any) => any;
+  updateContextByListBooking: (booking: any[]) => any;
   isCustomerInfoFormValid: () => boolean;
 
   setInputName(name: string): void;
@@ -65,6 +69,15 @@ export const CheckinContextProvider: FC<{ children: JSX.Element }> = ({children}
 
   const reducer = (state: any, action: any) => {
     const {step} = state;
+
+    function formatCheckinDate(checkinDate: Date) {
+      let checkin = checkinDate.toDateString() + ' at ' + checkinDate.toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+      return checkin;
+    }
+
     switch (action.type) {
       case actions.BACK_FLOW:
         if (action.payload.nextStep < 0) {
@@ -130,22 +143,30 @@ export const CheckinContextProvider: FC<{ children: JSX.Element }> = ({children}
         })
         return {...state, fieldsCustomerInfo};
       case actions.BOOKING_RETURNED:
-        const checkinDate = new Date(action.payload.booking.checkinAt);
-        let checkin = checkinDate.toDateString() + ' at ' + checkinDate.toLocaleTimeString([], {
-          hour: '2-digit',
-          minute: '2-digit'
-        });
-        const checkoutDate = new Date(action.payload.booking.checkoutAt);
-        let checkout = checkoutDate.toDateString() + ' at ' + checkoutDate.toLocaleTimeString([], {
-          hour: '2-digit',
-          minute: '2-digit'
-        });
+        const checkinDate = formatCheckinDate(new Date(action.payload.booking.checkinAt));
+        const checkoutDate = formatCheckinDate(new Date(action.payload.booking.checkoutAt));
         return {
           ...state,
-          checkinDate: checkin,
-          checkoutDate: checkout,
+          checkinDate: checkinDate,
+          checkoutDate: checkoutDate,
           bookingCode: action.payload.booking.bookingCode,
-          bookingId: action.payload.booking._id
+          bookingId: action.payload.booking._id,
+          bookings: undefined,
+          openBookings: false
+        };
+      case actions.BOOKING_LIST_RETURNED:
+        const additionalBookings = action.payload.bookings.slice();
+        const checkinDateByList = formatCheckinDate(new Date(action.payload.bookings[0].checkinAt));
+        const checkoutDateByList = formatCheckinDate(new Date(action.payload.bookings[0].checkoutAt));
+        delete additionalBookings[0];
+        return {
+          ...state,
+          checkinDate: checkinDateByList,
+          checkoutDate: checkoutDateByList,
+          bookingCode: action.payload.bookings[0].bookingCode,
+          bookingId: action.payload.bookings[0]._id,
+          bookings: additionalBookings,
+          openBookings: true
         };
       case 'reset':
         return {
@@ -176,7 +197,10 @@ export const CheckinContextProvider: FC<{ children: JSX.Element }> = ({children}
           checkoutDate: undefined,
           room: '',
           bookingId: '',
-          lastStep: 0
+          lastStep: 0,
+          bookings: undefined,
+          openBookings: false,
+          bookingsSelecteds: [],
         }
 
     }
@@ -311,6 +335,10 @@ export const CheckinContextProvider: FC<{ children: JSX.Element }> = ({children}
     dispatch({type: actions.BOOKING_RETURNED, payload: {booking}});
   }
 
+  const updateContextByListBooking = (bookings: any[]) => {
+    dispatch({type: actions.BOOKING_LIST_RETURNED, payload: {bookings}});
+  }
+
   return (<CheckinContext.Provider value={{
     state,
     backStep,
@@ -328,6 +356,7 @@ export const CheckinContextProvider: FC<{ children: JSX.Element }> = ({children}
     isValidField,
     validateAllFields,
     updateContextByBooking,
-    isCustomerInfoFormValid
+    isCustomerInfoFormValid,
+    updateContextByListBooking
   }}>{children}</CheckinContext.Provider>);
 }

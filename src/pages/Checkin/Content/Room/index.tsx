@@ -3,6 +3,7 @@ import React, {Fragment, useEffect, useState} from "react";
 import {PrimaryButton} from "../../../../component/Button/PrimaryButton";
 import {CheckinContext} from "../../../../context/checkin";
 import {toast} from "react-toastify";
+import {ImSpinner3} from "react-icons/im";
 
 export const Room = () => {
 
@@ -65,19 +66,25 @@ export const Room = () => {
             <FormControl alignItems='center'>
               <FormLabel htmlFor='room' fontWeight={400} color={"#121212"} fontSize="16"
                          fontFamily={"Inter"}>Room number</FormLabel>
-              <Select placeholder="Select a room"
-                      id='room'
-                      minW={60}
-                      value={room}
-                      onChange={(e) => setRoom(e.target.value)}
-              >
-                {
-                  rooms.map((room: any, index: number) =>
-                    <option key={room._id} value={room._id}>{room.roomNumber}</option>
-                  )
-                };
+              {rooms.length === 0 ?
+                <ImSpinner3 className="rotate" size={50} />
+                :
+                <Select placeholder="Select a room"
+                        id='room'
+                        minW={60}
+                        value={room}
+                        onChange={(e) => setRoom(e.target.value)}
+                >
+                  {
+                    rooms.map((room: any, index: number) =>
+                      <option key={room._id} value={room._id}>{room.roomNumber}</option>
+                    )
+                  };
 
-              </Select>
+                </Select>
+
+              }
+
             </FormControl>
           </Box>
         </Center>

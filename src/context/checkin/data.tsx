@@ -25,5 +25,8 @@ export const data = {
   checkoutDate: undefined,
   room: '',
   bookingId: '',
-  lastStep: 0
+  lastStep: 0,
+  bookings: undefined,
+  openBookings: false,
+  bookingsSelecteds: []
 }

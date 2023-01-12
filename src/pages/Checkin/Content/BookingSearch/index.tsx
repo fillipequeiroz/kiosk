@@ -1,10 +1,10 @@
 import {Box, Center, Flex, FormControl, FormLabel, GridItem, Input, SimpleGrid, Text, VStack} from "@chakra-ui/react";
-import React, {Fragment, useState} from "react";
+import React, {Fragment, useEffect, useState} from "react";
 import {PrimaryButton} from "../../../../component/Button/PrimaryButton";
 import {CheckinContext} from "../../../../context/checkin";
 import {toast} from "react-toastify";
 import {useDisclosure} from "@chakra-ui/hooks";
-import {ModalReserve} from "../../../../component/ModalReserve";
+import {ModalBookings} from "../../../../component/ModalReserve";
 import {KeyboardComponent} from "../../../../component/Keyboard";
 import {WAITING} from "../index";
 
@@ -21,6 +21,15 @@ export const BookingSearch = () => {
   const onChangeInput = (e: any) => {
     console.log('alterar para funcionar no pai, isso é para escrever pelo teclado normal, não é tão importante')
   }
+
+  useEffect(() => {
+    if (context.state.bookings && context.state.bookings.length > 0 && context.state.openBookings) {
+      onOpen();
+      context.state.bookingsSelecteds = [];
+      context.state.openBookings = false;
+    }
+  }, [context.state]);
+
 
   const handleClickNextStep = () => {
     if (!validateForm()) {
@@ -47,23 +56,24 @@ export const BookingSearch = () => {
       const name = context.getInputValue('name', INPUTS_PAGE);
       const lastname = context.getInputValue('lastname', INPUTS_PAGE);
       fetch(API_URL + 'reservations?firstName=' + name + '&lastName=' + lastname)
-        .then((res) => res.json())
         .then((res) => {
-          console.log(res);
           context.backLastStep();
-          if ((res.code && res.code == '404') || !res.data || res.data.length === 0) {
-            toast.error('Booking not found.')
+          return res.json();
+        })
+        .then((res) => {
+          return res;
+        }).then((res) => {
+        if ((res.code && res.code == '404') || !res.data || res.data.length === 0) {
+          toast.error('Booking not found.')
+        } else {
+          if (res.data.length === 1) {
+            context.updateContextByBooking(res.data[0]);
+            nexPage();
           } else {
-            if (res.data.length === 1) {
-              context.updateContextByBooking(res.data[0]);
-              nexPage();
-            } else {
-              context.updateContextByBooking(res);
-              onOpen();
-            }
-
+            context.updateContextByListBooking(res.data);
           }
-        });
+        }
+      });
     }
   }
 
@@ -229,8 +239,8 @@ export const BookingSearch = () => {
         <PrimaryButton text={'Confirm'} click={handleClickNextStep} mt={10} ml={0}/>
       </Center>
 
-      <ModalReserve onOpen={onOpen} handleClickNextStep={nexPage} isOpen={isOpen}
-                    onClose={onClose}></ModalReserve>
+      <ModalBookings onOpen={onOpen} handleClickNextStep={nexPage} isOpen={isOpen}
+                     onClose={onClose}></ModalBookings>
 
 
     </Fragment>
